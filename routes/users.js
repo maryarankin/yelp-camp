@@ -5,23 +5,38 @@ const User = require('../models/user');
 const passport = require('passport');
 const users = require('../controllers/users');
 
+//grouped into common routes:
+router.route('/register')
+    .get(users.renderRegister)
+    .post(catchAsync(users.register))
+
+router.route('/login')
+    .get(users.renderLogin)
+    .post(passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), users.login)
+
+router.get('/logout', users.logout)
+
+module.exports = router;
+
+//old version (ungrouped):
+
 //registration form
-router.get('/register', users.renderRegister)
+//router.get('/register', users.renderRegister)
 
 //registering a new user
 //note: we have our general error handler for mongoose errors via catchAsync fxn
 //but we also are doing an add'l try/catch to more elegantly handle issues
 //(ie someone is trying to create an account with an existing username)
-router.post('/register', catchAsync(users.register));
+//router.post('/register', catchAsync(users.register));
 
 //form to log in
-router.get('/login', users.renderLogin)
+//router.get('/login', users.renderLogin)
 
 //logging in
 //use passport middleware .authenticate(STRATEGY, OPTIONS)
-router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), users.login)
+//router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), users.login)
 
 //logging out
-router.get('/logout', users.logout)
+//router.get('/logout', users.logout)
 
-module.exports = router;
+//module.exports = router;
