@@ -1,0 +1,16 @@
+<!-- using bootstrap's alert for our flash messages; give it a role of alert for accessibility purposes -->
+<% if(success && success.length) { %> <!--checking if there is a success & if it has a length (b/c it always exists but is an empty array with no length if there's no message in it); otherwise it would always display an empty alert box on each page-->
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+<% } %>
+
+<% if(error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+<% } %>
