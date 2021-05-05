@@ -8,14 +8,14 @@
 
     <div class="row">
         <h1 class="text-center">New Campground</h1>
-        <div class="col-6 offset-3">
+        <div class="col-md-6 offset-md-3">
             <!--offset-3 is a way to center things since it's a col-6-->
             <form action="/campgrounds" method="post" novalidate class="validated-form" enctype="multipart/form-data"> <!-- in order to parse multipart forms, need a middleware called multer (npm i multer) -->
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
                     <!-- using campground[title] and campground[location] is an optional way to structure your data for when it's sent to the db -->
                     <input class="form-control" type="text" name="campground[title]" id="title"
-                        placeholder="Campground Name" required>
+                        placeholder="Campground Name" required autofocus>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
