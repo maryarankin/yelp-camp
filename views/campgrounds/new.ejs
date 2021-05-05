@@ -1,11 +1,16 @@
 <% layout('layouts/boilerplate') %>
 
+<!-- image upload process -->
+<!-- first we have to allow our form to accept uploaded files and to be able to send them to our server -->
+<!-- can't use a regular html form to send files b/c of the enctype (encoded type); default is urlencoded form; have to set it to multipart/form-data instead -->
+<!-- then must send the images to a service like cloudinary that will store them for us (b/c mongo won't store very much for us) -->
+<!-- then cloudinary sends the urls back to mongo, and mongo stores the media urls with the relevant campground -->
 
     <div class="row">
         <h1 class="text-center">New Campground</h1>
         <div class="col-6 offset-3">
             <!--offset-3 is a way to center things since it's a col-6-->
-            <form action="/campgrounds" method="post" novalidate class="validated-form">
+            <form action="/campgrounds" method="post" novalidate class="validated-form" enctype="multipart/form-data"> <!-- in order to parse multipart forms, need a middleware called multer (npm i multer) -->
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
                     <!-- using campground[title] and campground[location] is an optional way to structure your data for when it's sent to the db -->
@@ -23,14 +28,7 @@
                         Looks good!
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label" for="image">Image URL</label>
-                    <input class="form-control" type="text" name="campground[image]" id="image" placeholder="Image URL"
-                        required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
+
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
                     <textarea class="form-control" name="campground[description]" id="description"
@@ -47,6 +45,29 @@
                             aria-label="price" aria-describedby="price-label" required>
                     </div>
                 </div>
+
+                <!-- note: should really have a limit on how many images each campground can have in the real world -->
+                
+                <!-- note: in the video, he had to use bs-custom-file-input package to get the file names to show up when chosen from computer; new version of bootstrap does this automatically -->
+                <div class="mb-3">
+                    <label for="">Upload Images</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="image" name="image" multiple>
+                    </div>
+                </div>
+
+                <!-- old versions of the image input (top was the uglier file input button; bottom was when it was just asking for an image url) -->
+                <!-- <input type="file" name="image" id="" multiple> -->
+
+                <!-- <div class="mb-3">
+                    <label class="form-label" for="image">Image URL</label>
+                    <input class="form-control" type="text" name="campground[image]" id="image" placeholder="Image URL"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div> -->
+
                 <div class="mb-3">
                     <button class="btn btn-success">Add Campground</button>
                 </div>

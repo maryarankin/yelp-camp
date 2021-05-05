@@ -1,3 +1,18 @@
+//environment variables
+//so you can store confidential things like cloudinary credentials, for ex
+//create a file called .env at the top level of this folder
+//npm i dotenv
+//inside .env file, create key value pairs (ie SECRET=fjdksljfe)
+//can access them thru dotenv
+
+if(process.env.NODE_ENV !== "production") { //we run in development mode by default
+    require('dotenv').config(); //will add variables defined in the .env file into process.env.NODE_ENV in this node app
+}
+//process.env.NODE_ENV is an environment variable that is either development or production
+//in production, there's another way to do it - don't store them in a file but in the environment...
+//when uploading this code to github, for ex, don't include the .env file in your upload
+//if someone from github uses your code, they just have to put in their own local environment variables
+
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');

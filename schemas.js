@@ -6,10 +6,11 @@ module.exports.campgroundSchema = Joi.object({ //this isn't a mongoose schema - 
     campground: Joi.object({   //everything is nested under campground
         title: Joi.string().required(),
         price: Joi.number().required().min(0),
-        image: Joi.string().required(),
+        //image: Joi.string().required(),
         location: Joi.string().required(),
         description: Joi.string().required()
-    }).required()
+    }).required(),
+    deleteImages: Joi.array() //had to add this to be allowed to delete images
 })
 
 module.exports.reviewSchema = Joi.object({

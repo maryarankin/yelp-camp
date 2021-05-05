@@ -4,7 +4,7 @@
         <h1 class="text-center">Edit Campground</h1>
         <div class="col-6 offset-3">
             <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" novalidate
-                class="validated-form">
+                class="validated-form" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
                     <!-- using campground[title] and campground[location] is an optional way to structure your data for when it's sent to the db -->
@@ -18,14 +18,6 @@
                     <label class="form-label" for="location">Location</label>
                     <input class="form-control" type="text" name="campground[location]" id="location"
                         value="<%=campground.location%>" placeholder="Location" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="image">Image URL</label>
-                    <input class="form-control" type="text" name="campground[image]" id="image"
-                        value="<%= campground.image %>" placeholder="Image URL" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -46,6 +38,22 @@
                             value="<%= campground.price %>.00" placeholder="0.00" aria-label="price"
                             aria-describedby="price-label" required>
                     </div>
+                </div>
+                <div class="mb-3">
+                    <label for="">Add More Images</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="image" name="image" multiple>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <% campground.images.forEach(function(img, i) { %> 
+                        <img src="<%= img.thumbnail %>" class="img-thumbnail" alt=""> <!-- img.thumbnail comes from the virtual property we defined on our campground models page to use cloudinary transformations to make the imgs smaller -->
+                        <div class="form-check-inline">
+                            <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>"> <!--giving each img in the loop an id so can associate each with the label below; the value attribute is so you can delete from the server side (b/c filename rather than url is how to delete from cloudinary) -->
+                            <!-- deleteImages is an array when the body is parsed that includes anything that was checked off -->
+                        </div>
+                        <label for="image-<%=i%>">Delete?</label>
+                    <% }) %> 
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-info">Update Campground</button>
