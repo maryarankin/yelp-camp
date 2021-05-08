@@ -209,3 +209,8 @@ app.listen(port, () => {
 //notes on deploying: downloaded heroku cli then pushed changes via git to heroku using "git push heroku master"
 //then can run "heroku logs --tail" to see any error msgs
 //just like how we do nodemon index.js we have to tell heroku where to start - go to package.json and add to scripts there
+
+//have to configure env variables
+//can do 2 ways:
+//go to heroku site dashboard, go to settings, add config vars there
+//or from command line: "heroku config:set SECRET="
