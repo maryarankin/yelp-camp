@@ -27,6 +27,8 @@ const LocalStrategy = require('passport-local'); //adding passport-local strateg
 const User = require('./models/user')
 //const Joi = require('joi'); //server side validation to prevent errors/specify which data is required for a form
 //note: don't actually need joi in this file anymore b/c not using it here
+const mongoSanitize = require('express-mongo-sanitize'); //this is a package to prevent mongo injection (when people type characters like $ and . in a search field that queries the database to create their own query; this package just prevents characters like that from being allowed; will delete the whole part of the query that includes these characters, but will still allow any other 'clean' parts of the query)
+const helmet = require('helmet'); //for security - alters the http headers you get back when make a request - gives you more headers to make app more secure
 
 const { campgroundSchema, reviewSchema } = require('./schemas')
 const Review = require('./models/review');
@@ -58,14 +60,71 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 //to serve our static directory:
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(mongoSanitize());
+app.use(helmet()); //enables the 11 middleware helmet comes with
+//then, have to change the default for contentSecurityPolicy from helmet or else it won't let us load things like external images/js/bootstrap
+//you can specify a list of acceptable sources for different types of media and helmet will prevent anything that's not from one of those sites from loading on your page
+
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    // "https://api.tiles.mapbox.com/",
+    // "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    // "https://api.mapbox.com/",
+    // "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+    "https://cdn.jsdelivr.net"
+];
+const connectSrcUrls = [
+    // "https://api.mapbox.com/",
+    // "https://a.tiles.mapbox.com/",
+    // "https://b.tiles.mapbox.com/",
+    // "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+
+//configure the contentSecurityPolicy with arrays of sources above:
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/dfncl4mbo/", 
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
+
+//note: could also download some of the files above instead so they're local and would count as "self" and would automatically be allowed
+
+
 
 //to make cookies!
 const sessionConfig = {
+    name: 'session', //instead of default name (connect.sid) - this helps with security b/c hacker might otherwise try to take all connect.sid cookies
     secret: 'thisshouldbeabettersecret',
     resave: false,
     saveUninitialized: true,
     cookie: { //giving our cookies some options
-        httpOnly: true, //a small secret thing (this is the default to be true anyway but set it just in case)
+        httpOnly: true, //a small secret thing (this is the default to be true anyway but set it just in case); means our cookies aren't accessible thru javascript (only http) so it's safer in preventing hackers trying to extract cookies
+        //secure: true, //won't work until you're deployed - won't show you as logged in; this makes it go thru https (which localhost won't let you do) 
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7, //this will make cookie expire after a week (Date.now() is in milliseconds so multiply by 1000 to get seconds, 60 to get mins, etc.)
         maxAge: 1000 * 60 * 60 * 24 * 7
     }

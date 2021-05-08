@@ -6,9 +6,12 @@
                 <h4 class="alert-heading">
                     <%= err.message %>
                 </h4>
+                <!-- only render the error stack if not in production; otherwise hide so user doesn't get extra info about where the problem happened in your files (and doesn't get info about your file setup for security reasons) -->
+                <% if(process.env.NODE_ENV !== "production") { %>
                 <p>
                     <%= err.stack %>
                 </p>
+                <% } %>
             </div>
         </div>
     </div>
