@@ -37,7 +37,16 @@ const userRoutes = require('./routes/users');
 const campgroundRoutes= require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+const MongoStore = require('connect-mongo'); //to set up our session store to be saved to mongo instead of locally
+
+//from our .env file; this is so we can connect to mongo atlas (cloud db - when we deploy we don't want to use our local version of mongo db anymore so use the mongo atlas service instead to host our db)
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
+
+// what we were connecting to (local db):
+// mongodb://localhost:27017/yelp-camp 
+
+//now, connect to dbUrl - this is the only thing we need to change when moving our db to production
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -114,12 +123,23 @@ app.use(
 
 //note: could also download some of the files above instead so they're local and would count as "self" and would automatically be allowed
 
+const secret = process.env.SECRET || 'thisshouldbeabettersecret' //development version
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl, //mongo url
+    secret: secret,
+    touchAfter: 24 * 60 * 60 //prevents saves when nothing has changed
+})
+
+store.on("error", function(e) {
+    console.log("Session store error", e)
+})
 
 //to make cookies!
 const sessionConfig = {
+    store: store, //could also just do 'store' instead of 'store: store'; b/c we defined this store above, we're now using mongo to store our info instead of storing it in memory locally
     name: 'session', //instead of default name (connect.sid) - this helps with security b/c hacker might otherwise try to take all connect.sid cookies
-    secret: 'thisshouldbeabettersecret',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie: { //giving our cookies some options
