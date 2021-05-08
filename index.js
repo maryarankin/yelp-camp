@@ -214,3 +214,4 @@ app.listen(port, () => {
 //can do 2 ways:
 //go to heroku site dashboard, go to settings, add config vars there
 //or from command line: "heroku config:set SECRET="
+//have to whitelist the ip address from heroku to allow it for mongo atlas; but heroku uses lots of ips so just go to mongo atlas and select 'allow access from anywhere'
