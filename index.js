@@ -201,6 +201,11 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err });
 })
 
-app.listen(3000, () => {
-    console.log('serving on port 3000');
+const port = process.env.PORT || 3000; //process.env.PORT will be automatically set thru heroku; OR if in development, use 3000
+app.listen(port, () => {
+    console.log(`serving on port ${port}`);
 })
+
+//notes on deploying: downloaded heroku cli then pushed changes via git to heroku using "git push heroku master"
+//then can run "heroku logs --tail" to see any error msgs
+//just like how we do nodemon index.js we have to tell heroku where to start - go to package.json and add to scripts there
