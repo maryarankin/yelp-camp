@@ -206,7 +206,7 @@ app.listen(port, () => {
     console.log(`serving on port ${port}`);
 })
 
-//notes on deploying: downloaded heroku cli then pushed changes via git to heroku using "git push heroku master"
+//notes on deploying: downloaded heroku cli then pushed changes via git to heroku using "git push heroku master" (after doing git add and git commit of course)
 //then can run "heroku logs --tail" to see any error msgs
 //just like how we do nodemon index.js we have to tell heroku where to start - go to package.json and add to scripts there
 
