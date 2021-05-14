@@ -46,14 +46,16 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <% campground.images.forEach(function(img, i) { %> 
-                        <img src="<%= img.thumbnail %>" class="img-thumbnail" alt=""> <!-- img.thumbnail comes from the virtual property we defined on our campground models page to use cloudinary transformations to make the imgs smaller -->
-                        <div class="form-check-inline">
-                            <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>"> <!--giving each img in the loop an id so can associate each with the label below; the value attribute is so you can delete from the server side (b/c filename rather than url is how to delete from cloudinary) -->
-                            <!-- deleteImages is an array when the body is parsed that includes anything that was checked off -->
-                        </div>
-                        <label for="image-<%=i%>">Delete?</label>
-                    <% }) %> 
+                    <% if (campground.images[0]) { %>
+                        <% campground.images.forEach(function(img, i) { %> 
+                            <img src="<%= img.thumbnail %>" class="img-thumbnail" alt=""> <!-- img.thumbnail comes from the virtual property we defined on our campground models page to use cloudinary transformations to make the imgs smaller -->
+                            <div class="form-check-inline">
+                                <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>"> <!--giving each img in the loop an id so can associate each with the label below; the value attribute is so you can delete from the server side (b/c filename rather than url is how to delete from cloudinary) -->
+                                <!-- deleteImages is an array when the body is parsed that includes anything that was checked off -->
+                            </div>
+                            <label for="image-<%=i%>">Delete?</label>
+                        <% }) %> 
+                    <% } %>
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-info">Update Campground</button>
